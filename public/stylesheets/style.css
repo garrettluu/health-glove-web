@@ -118,7 +118,7 @@ body, html {
 nav {
   float: left;
   width: 20%;
-  height: 700px; /* only for demonstration, should be removed */
+  height: 1200px; /* only for demonstration, should be removed */
   background: #f44336;
 }
 article {
