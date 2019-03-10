@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Seatz - Online Seat Tracking</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="images/favicon.ico">
+<link rel="stylesheet" href="styles/main.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  color: #777;
+  line-height: 1.8;
+}
+
+/* First image (Logo. Full height) */
+.bgimg-1 {
+  background: url('images/running.jpg') no-repeat;
+  background-size: cover;
+  min-height: 100%;
+}
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+/* Turn off parallax scrolling for tablets and phones */
+@media only screen and (max-device-width: 1600px) {
+  .bgimg-1 {
+    background-attachment: scroll;
+    min-height: 290px;
+  }
+}
+/* Layout */
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 20%;
+  height: 300px; /* only for demonstration, should be removed */
+  background: #ccc;
+  padding: 5px;
+}
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+/* Clear floats after the columns */
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+/* Table Stuff */
+table {
+  width:100%;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+table#dashboard tr:nth-child(even) {
+  background-color: #eee;
+}
+table#dashboard tr:nth-child(odd) {
+ background-color: #fff;
+}
+table#dashboard th {
+  background-color: black;
+  color: white;
+}
+/*
+#startWorkout {
+  width: 100%;
+  padding: 50px 0;
+  text-align: center;
+  background-color: grey;
+  margin-top: 20px;
+}
+*/
+* {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+</style>
+</head>
+  <body>
+
+    <!-- Navbar -->
+    <div class="topnav">
+      <a href="main.html">Home</a>
+      <a href="history.html">View History</a>
+      <a href="about.html">About</a>
+    </div>
+
+    <img src='images/running-couple.jpg' style="width:100%;margin-bottom:-5px">
+
+    <div class="contentMobile">
+      <button onclick="startButton()">START</button>
+
+
+      <div id="startWorkout" class="startWorkout">
+        <section>
+          <nav>
+            <ul>
+              <li><a href="#">Previous Sessions</a></li>
+              <li><a href="#">Personal History</a></li>
+              <li><a href="#">Community</a></li>
+              <li><a href="about.html">About Health Glove</a></li>
+            </ul>
+          </nav>
+
+          <div class="col-3">
+            <input type="image" src="images/start.png" onclick="startButton()" style="width:30%"/>
+            <p> Press START to start recording!</p>
+          </div>
+
+          <div class="col-6">
+            <p> Start recording by contacting the server </p>
+          </div>
+        </div>
+
+      <div id="workout" class="workout progress" style="display: none;">
+        <section>
+          <nav>
+            <ul>
+              <li><a href="#">Previous Sessions</a></li>
+              <li><a href="#">Personal History</a></li>
+              <li><a href="#">Community</a></li>
+              <li><a href="about.html">About Health Glove</a></li>
+            </ul>
+          </nav>
+
+<!--
+        <div class="col-3 menu">
+          <ul>
+            <li><a href="#">Previous Sessions</a></li>
+            <li><a href="#">Personal History</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="about.html">About Health Glove</a></li>
+          </ul>
+        </div>
+-->
+        <div class="col-3">
+          <img src='images/heartrate.png' alt="Heart Rate" style="width:50%;margin-bottom:-5px">
+          <h2>Heart Rate (bpm)</h2>
+          <p>Current: 88</p>
+          <p>Last 2 Minutes: 72</p>
+          <p>Last 10 Minutes: 70</p>
+        </div>
+
+        <div class="col-3">
+          <img src='images/bodytemp.png' alt="Body Temperature" style="width:50%;margin-bottom:-5px">
+          <h2>Body Temperature (F)</h2>
+          <p>Current: 100</p>
+          <p>Last 2 Minutes: 96</p>
+          <p>Last 10 Minutes: 95</p>
+        </div>
+
+        <div class="col-3">
+          <h3>Current Session</h3>
+          <p>Time: 00:10:00</p>
+          <p>Target Time: 00:30:00</p>
+          <p>Distance Walked: 2 miles</p>
+          <p>Calories Burned: 30 kcal</p>
+          <input type="image" src="images/pause.png" onclick="startButton()" style="width:30%"/>
+          <input type="image" src="images/stop.png" onclick="startButton()" style="width:30%"/>
+        </div>
+
+
+      </div>
+
+
+
+
+      <!-- Nav Board -->
+      <section>
+        <nav>
+          <ul>
+            <li><a href="#">Previous Sessions</a></li>
+            <li><a href="#">Personal History</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="about.html">About Health Glove</a></li>
+          </ul>
+        </nav>
+
+
+      <!-- Dashboard -->
+      <article>
+      <table style="width:100%" id="Dashboard">
+       <tr>
+         <th></th>
+         <th>Heart Rate (bpm)</th>
+         <th>Body Temperature (F)</th>
+       </tr>
+       <tr>
+         <th>Last Minute</th>
+         <td>88</td>
+         <td>100</td>
+       </tr>
+       <tr>
+         <th>Average for 5 Minutes</th>
+         <td>72</td>
+         <td>96</td>
+       </tr>
+       <tr>
+         <th>Average for 10 minutes</th>
+         <td>70</td>
+         <td>95</td>
+      </table>
+      </article>
+
+    </div>
+
+    <div class="footer">
+      <a href="index.html">Switch to desktop version</a>
+
+    </div>
+
+    <script>
+    function startButton() {
+      var start = document.getElementById("startWorkout");
+      var workout = document.getElementById("workout");
+      /**if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }*/
+      if ($(start).is(':visible')) {
+        $(start).slideUp('slow');
+        $(workout).slideDown('slow');
+      } else {
+        $(start).slideDown('fast');
+        $(workout).slideUp('fast');
+      }
+
+    }
+    </script>
+
+
+
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/main.js"></script>
+
+</html>

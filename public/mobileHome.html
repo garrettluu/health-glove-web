@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Health Glove: Web App</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="images/favicon.ico">
+<link rel="stylesheet" href="styles/main.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  color: #777;
+  line-height: 1.8;
+  margin:0;
+  padding:0;
+}
+
+/* First image (Logo. Full height) */
+.bgimg-1 {
+  background: url('images/running.jpg') no-repeat;
+  background-size: cover;
+  max-height: 100%;
+  height : auto;
+}
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+/* Turn off parallax scrolling for tablets and phones */
+@media only screen and (max-device-width: 1600px) {
+  .bgimg-1 {
+    background-attachment: scroll;
+    min-height: 290px;
+  }
+}
+/* Layout */
+/* Create two columns/boxes that floats next to each other */
+nav {
+  float: left;
+  width: 20%;
+  height: 700px; /* only for demonstration, should be removed */
+  background: #f44336;
+}
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+/* Clear floats after the columns */
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+/* Table Stuff */
+table {
+  width:100%;
+}
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 15px;
+  text-align: left;
+}
+table#dashboard tr:nth-child(even) {
+  background-color: #eee;
+}
+table#dashboard tr:nth-child(odd) {
+ background-color: #fff;
+}
+table#dashboard th {
+  background-color: black;
+  color: white;
+}
+
+#startWorkout {
+  width: 80%;
+}
+#workout {
+  width: 80%;
+}
+
+
+* {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+nav a:link, nav a:visited {
+  background-color: #f44336;
+  color: white;
+  padding: 15px 25px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  width:100%;
+}
+
+nav a:hover, nav a:active {
+  background-color: red;
+}
+nav ul{
+  list-style-type: none;
+}
+
+</style>
+</head>
+  <body>
+<!-- Scripts -->
+<script>
+
+var time = 0; var seconds; var minutes; var hours; var working = true;
+var time_array = []; var heartrate_array = [];
+function record_time() {
+if (working == true) {
+    seconds = time % 60;
+    if (seconds < 10) seconds = "0" + String(seconds);
+    minutes = Math.floor(time / 60) % 60;
+	if (minutes < 10) minutes = "0" + String(minutes);
+    hours = Math.floor(time / 3600);
+	if (hours < 10) hours = "0" + String(hours);
+    document.getElementById("elapsedTime").innerHTML = "Elapsed Time: " + hours + ":" + minutes + ":" + seconds;
+    time += 1;
+
+  time_array.push(time)
+  heartrate_array.push(Math.round(50 + Math.random() *(-50-50)))
+    }
+}
+function togglepauseplay() {
+  var x = document.getElementById("pausepart");
+  var y = document.getElementById("playpart")
+  if (x.style.display === "none") {
+    x.style.display = "block";
+    y.style.display = "none";
+  } else {
+    x.style.display = "none";
+    y.style.display = "block";
+  }
+}
+function stopworkout() {
+  working = false
+}
+// Graphing Tool
+function plot_graph() {
+var dps = [];
+var chart = new CanvasJS.Chart("chartContainer",{
+  theme: "light2",
+  title :{
+		text: "Your Heart Rate for the past 30 seconds"
+	},
+	axisX: {
+		title: "Time Elapsed (seconds)"
+	},
+	axisY: {
+		title: "Beats per Minute (bpm)"
+	},
+	data: [{
+		type: "line",
+		dataPoints : dps
+	}]
+});
+
+// Initial Values
+var xVal = 0;
+var yVal = 10;
+var newDataCount = 6;
+var updateChart = function () {
+		yVal = heartrate_array[xVal-1];
+		dps.push({x: xVal,y: yVal,});
+		xVal++;
+    if (dps.length >  30 )
+    {
+    	dps.shift();
+    }
+	chart.render();
+
+	// update chart after specified time.
+};
+setInterval(function(){updateChart()}, 1000);
+}
+// Web Get Request
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       // Typical action to be performed when the document is ready:
+       document.getElementById("demo").innerHTML = xhttp.responseText;
+    }
+};
+xhttp.open("GET", "filename", true);
+xhttp.send();
+</script>
+    <img src='images/running-couple.jpg' style="width:100%;margin-bottom:-5px">
+
+    <div class="contentMobile">
+      <section>
+        <nav>
+            <a href="#">Previous Sessions</a>
+            <a href="#">Personal History</a>
+            <a href="#">Community</a>
+            <a href="about.html">About Health Glove</a>
+        </nav>
+
+
+
+      <div id="startWorkout" class="startWorkout">
+          <div class="col-3">
+            <input type="image" src="images/start.png" onclick="setInterval(record_time, 1000); startButton(); plot_graph()" style="width:60%"/>
+          </div>
+
+          <div class="col-6">
+            <p> Target Time: 30 minutes </p>
+            <p> When you are ready, hit START to start recording your heart rate and body temperature</p>
+          </div>
+        </div>
+
+      <div id="workout" class="workout progress" style="display: none;">
+        <div class="col-3">
+          <img src='images/heartrate.png' alt="Heart Rate" style="width:50%;margin-bottom:-5px">
+          <h2>Heart Rate (bpm)</h2>
+          <p>Current: 88</p>
+          <p>Last 2 Minutes: 72</p>
+          <p>Last 10 Minutes: 70</p>
+        </div>
+
+        <div class="col-3">
+          <img src='images/bodytemp.png' alt="Body Temperature" style="width:50%;margin-bottom:-5px">
+          <h2>Body Temperature (F)</h2>
+          <p>Current: 100</p>
+          <p>Last 2 Minutes: 96</p>
+          <p>Last 10 Minutes: 95</p>
+        </div>
+
+        <div class="col-3">
+          <h3>Current Session</h3>
+          <p id="elapsedTime">Elapsed Time: 00:00:00</p> <!-- updates every second -->
+          <p>Target Time: 00:30:00</p>
+          <p>Distance Walked: 2 miles</p>
+          <p>Calories Burned: 30 kcal</p>
+<!--          <input id="pauseplay" type="image" src="images/pause.png" onclick='toggle_workout()' style="width:30%"/>
+          <p id="pauseplaytext"> Press to pause the workout </p> -->
+          <div id="pausepart">
+            <input type="image" src="images/pause.png" onclick='working = false; togglepauseplay();' style="width:30%"/>
+            <p> Press to pause the workout </p>
+          </div>
+          <div id="playpart" style="display:none">
+            <input type="image" src="images/start.png" onclick="working = true; togglepauseplay();" style="width:30%"/>
+            <p> Press to start the workout </p>
+          </div>
+          <input type="image" src="images/stop.png" onclick="working = false; startButton(); time = 0; clearTimeout(time)" style="width:30%"/>
+          <p> Press to stop the workout </P>
+        </div>
+      <article>
+        <div id="chartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
+      </article>
+      </div>
+    </div>
+    <script>
+    function startButton() {
+      var start = document.getElementById("startWorkout");
+      var workout = document.getElementById("workout");
+      /**if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }*/
+      if ($(start).is(':visible')) {
+        $(start).slideUp('slow');
+        $(workout).slideDown('slow');
+      } else {
+        $(start).slideDown('fast');
+        $(workout).slideUp('fast');
+      }
+
+    }
+    </script>
+
+
+
+  </body>
+
+  <script src="scripts/jquery.js"></script>
+  <script src="scripts/canvasjs.min.js"></script>
+  <script src="scripts/main.js"></script>
+
+</html>
