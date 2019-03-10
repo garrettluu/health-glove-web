@@ -4,7 +4,6 @@ module.exports = function(io) {
     const http = require('http');
     const dgram = require('dgram');
     const client = dgram.createSocket('udp4');
-    ;
 
     //Hard-coded IP address, will be replaced soon
     var pi_ip = 'http://192.168.43.252:3000';
@@ -21,7 +20,7 @@ module.exports = function(io) {
         res.render('index', {title: 'Express'});
     });
 
-    /*
+    // /*
     client.on('listening', () => {
         // var address = client.address();
         client.setBroadcast(true);
@@ -32,9 +31,10 @@ module.exports = function(io) {
     //Get the IP of the raspberry pi via multicast
     client.on('message', (message, remote) => {
         //TODO: if message matches something
-        pi_ip = remote.address + ':' + remote.port;
+        pi_ip = remote.address + ':3000';
+        console.log(pi_ip);
     });
-    */
+    // */
 
     io.on('connection', function (socket) {
         console.log("Test");
@@ -63,8 +63,10 @@ module.exports = function(io) {
             }).on('end', function() {
                 var body = Buffer.concat(bodyChunks);
                 console.log('BODY: ' + body);
+
+                console.log(body.toJSON().heartRate);
             });
-    //         TODO handle response data
+
         });
     }
 

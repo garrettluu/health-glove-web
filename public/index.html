@@ -1,15 +1,104 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
+<title>Health Glove: Web App</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="stylesheets/images/favicon.ico">
+<link rel="stylesheet" href="stylesheets/style.css">
 </head>
+  <body>
+    <img src='stylesheets/images/running-couple.jpg' style="width:100%;margin-bottom:-5px"/>
 
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-  <script src="/javascripts/main.js"></script>
-</body>
+    <div class="contentMobile">
+      <section>
+        <nav>
+            <a href="#">Previous Sessions</a>
+            <a href="#">Personal History</a>
+            <a href="#">Community</a>
+            <a href="about.html">About Health Glove</a>
+        </nav>
+
+
+
+      <div id="startWorkout" class="startWorkout">
+          <div class="col-3">
+            <input type="image" src="stylesheets/images/start.png" onclick="setInterval(record_time, 1000); startButton(); plot_graph()" style="width:60%"/>
+          </div>
+
+          <div class="col-6">
+            <p> Target Time: 30 minutes </p>
+            <p> When you are ready, hit START to start recording your heart rate and body temperature</p>
+          </div>
+        </div>
+
+      <div id="workout" class="workout progress" style="display: none;">
+        <div class="col-3">
+          <img src='stylesheets/images/heartrate.png' alt="Heart Rate" style="width:50%;margin-bottom:-5px">
+          <h2>Heart Rate (bpm)</h2>
+          <p id="heart-rate-UI">Current: 88</p>
+          <!--<p>Last 2 Minutes: 72</p>-->
+          <!--<p>Last 10 Minutes: 70</p>-->
+        </div>
+
+        <div class="col-3">
+          <img src='stylesheets/images/bodytemp.png' alt="Body Temperature" style="width:50%;margin-bottom:-5px">
+          <h2>Body Temperature (F)</h2>
+          <p>Current: 100</p>
+          <p>Last 2 Minutes: 96</p>
+          <p>Last 10 Minutes: 95</p>
+        </div>
+
+        <div class="col-3">
+          <h3>Current Session</h3>
+          <p id="elapsedTime">Elapsed Time: 00:00:00</p> <!-- updates every second -->
+          <p>Target Time: 00:30:00</p>
+          <p>Distance Walked: 2 miles</p>
+          <p>Calories Burned: 30 kcal</p>
+<!--          <input id="pauseplay" type="image" src="images/pause.png" onclick='toggle_workout()' style="width:30%"/>
+          <p id="pauseplaytext"> Press to pause the workout </p> -->
+          <div id="pausepart">
+            <input type="image" src="stylesheets/images/pause.png" onclick='working = false; togglepauseplay();' style="width:30%"/>
+            <p> Press to pause the workout </p>
+          </div>
+          <div id="playpart" style="display:none">
+            <input type="image" src="stylesheets/images/start.png" onclick="working = true; togglepauseplay();" style="width:30%"/>
+            <p> Press to start the workout </p>
+          </div>
+          <input type="image" src="stylesheets/images/stop.png" onclick="working = false; startButton(); time = 0; clearTimeout(time)" style="width:30%"/>
+          <p> Press to stop the workout </P>
+        </div>
+      <article>
+        <div id="chartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
+      </article>
+      </div>
+    </div>
+    <script>
+    function startButton() {
+      var start = document.getElementById("startWorkout");
+      var workout = document.getElementById("workout");
+      /**if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }*/
+      if ($(start).is(':visible')) {
+        $(start).slideUp('slow');
+        $(workout).slideDown('slow');
+      } else {
+        $(start).slideDown('fast');
+        $(workout).slideUp('fast');
+      }
+
+    }
+    </script>
+
+
+
+  </body>
+
+  <script src="javascripts/jquery.js"></script>
+  <script src="javascripts/canvasjs.min.js"></script>
+  <script src="javascripts/main.js"></script>
 
 </html>
