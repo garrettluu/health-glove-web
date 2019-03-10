@@ -4,12 +4,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var socketio = require('socket.io');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
 var app = express();
 var io = socketio();
 app.io = io;
+
+var indexRouter = require('./routes/index')(io);
+var usersRouter = require('./routes/users');
 
 app.use(logger('dev'));
 app.use(express.json());
