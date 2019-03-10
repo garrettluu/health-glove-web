@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Seatz - Online Seat Tracking</title>
+<title>Health Glove: Web App</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="shortcut icon" href="images/favicon.ico">
@@ -142,14 +142,89 @@ nav ul{
 </style>
 </head>
   <body>
+<!-- Scripts -->
+<script>
 
-    <!-- Navbar
-    <div class="topnav">
-      <a href="main.html">Home</a>
-      <a href="history.html">View History</a>
-      <a href="about.html">About</a>
-    </div>
--->
+var time = 0; var seconds; var minutes; var hours; var working = true;
+var time_array = []; var heartrate_array = [];
+function record_time() {
+if (working == true) {
+    seconds = time % 60;
+    if (seconds < 10) seconds = "0" + String(seconds);
+    minutes = Math.floor(time / 60) % 60;
+	if (minutes < 10) minutes = "0" + String(minutes);
+    hours = Math.floor(time / 3600);
+	if (hours < 10) hours = "0" + String(hours);
+    document.getElementById("elapsedTime").innerHTML = "Elapsed Time: " + hours + ":" + minutes + ":" + seconds;
+    time += 1;
+
+  time_array.push(time)
+  heartrate_array.push(Math.round(50 + Math.random() *(-50-50)))
+    }
+}
+function togglepauseplay() {
+  var x = document.getElementById("pausepart");
+  var y = document.getElementById("playpart")
+  if (x.style.display === "none") {
+    x.style.display = "block";
+    y.style.display = "none";
+  } else {
+    x.style.display = "none";
+    y.style.display = "block";
+  }
+}
+function stopworkout() {
+  working = false
+}
+// Graphing Tool
+function plot_graph() {
+var dps = [];
+var chart = new CanvasJS.Chart("chartContainer",{
+  theme: "light2",
+  title :{
+		text: "Your Heart Rate for the past 30 seconds"
+	},
+	axisX: {
+		title: "Time Elapsed (seconds)"
+	},
+	axisY: {
+		title: "Beats per Minute (bpm)"
+	},
+	data: [{
+		type: "line",
+		dataPoints : dps
+	}]
+});
+
+// Initial Values
+var xVal = 0;
+var yVal = 10;
+var newDataCount = 6;
+var updateChart = function () {
+		yVal = heartrate_array[xVal-1];
+		dps.push({x: xVal,y: yVal,});
+		xVal++;
+    if (dps.length >  30 )
+    {
+    	dps.shift();
+    }
+	chart.render();
+
+	// update chart after specified time.
+};
+setInterval(function(){updateChart()}, 1000);
+}
+// Web Get Request
+var xhttp = new XMLHttpRequest();
+xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       // Typical action to be performed when the document is ready:
+       document.getElementById("demo").innerHTML = xhttp.responseText;
+    }
+};
+xhttp.open("GET", "filename", true);
+xhttp.send();
+</script>
     <img src='images/running-couple.jpg' style="width:100%;margin-bottom:-5px">
 
     <div class="contentMobile">
@@ -164,47 +239,17 @@ nav ul{
 
 
       <div id="startWorkout" class="startWorkout">
-<!--        <section>
-          <nav>
-            <ul>
-              <li><a href="#">Previous Sessions</a></li>
-              <li><a href="#">Personal History</a></li>
-              <li><a href="#">Community</a></li>
-              <li><a href="about.html">About Health Glove</a></li>
-            </ul>
-          </nav>
--->
           <div class="col-3">
-            <input type="image" src="images/start.png" onclick="startButton()" style="width:30%"/>
-            <p> Press START to start recording!</p>
+            <input type="image" src="images/start.png" onclick="setInterval(record_time, 1000); startButton(); plot_graph()" style="width:60%"/>
           </div>
 
           <div class="col-6">
-            <p> Start recording by contacting the server </p>
+            <p> Target Time: 30 minutes </p>
+            <p> When you are ready, hit START to start recording your heart rate and body temperature</p>
           </div>
         </div>
 
       <div id="workout" class="workout progress" style="display: none;">
-<!--        <section>
-          <nav>
-            <ul>
-              <li><a href="#">Previous Sessions</a></li>
-              <li><a href="#">Personal History</a></li>
-              <li><a href="#">Community</a></li>
-              <li><a href="about.html">About Health Glove</a></li>
-            </ul>
-          </nav>
--->
-<!--
-        <div class="col-3 menu">
-          <ul>
-            <li><a href="#">Previous Sessions</a></li>
-            <li><a href="#">Personal History</a></li>
-            <li><a href="#">Community</a></li>
-            <li><a href="about.html">About Health Glove</a></li>
-          </ul>
-        </div>
--->
         <div class="col-3">
           <img src='images/heartrate.png' alt="Heart Rate" style="width:50%;margin-bottom:-5px">
           <h2>Heart Rate (bpm)</h2>
@@ -223,64 +268,28 @@ nav ul{
 
         <div class="col-3">
           <h3>Current Session</h3>
-          <p>Time: 00:10:00</p>
+          <p id="elapsedTime">Elapsed Time: 00:00:00</p> <!-- updates every second -->
           <p>Target Time: 00:30:00</p>
           <p>Distance Walked: 2 miles</p>
           <p>Calories Burned: 30 kcal</p>
-          <input type="image" src="images/pause.png" onclick="startButton()" style="width:30%"/>
-          <input type="image" src="images/stop.png" onclick="startButton()" style="width:30%"/>
+<!--          <input id="pauseplay" type="image" src="images/pause.png" onclick='toggle_workout()' style="width:30%"/>
+          <p id="pauseplaytext"> Press to pause the workout </p> -->
+          <div id="pausepart">
+            <input type="image" src="images/pause.png" onclick='working = false; togglepauseplay();' style="width:30%"/>
+            <p> Press to pause the workout </p>
+          </div>
+          <div id="playpart" style="display:none">
+            <input type="image" src="images/start.png" onclick="working = true; togglepauseplay();" style="width:30%"/>
+            <p> Press to start the workout </p>
+          </div>
+          <input type="image" src="images/stop.png" onclick="working = false; startButton(); time = 0; clearTimeout(time)" style="width:30%"/>
+          <p> Press to stop the workout </P>
         </div>
-
-
-      </div>
-
-
-
-<!--
-
-      <section>
-        <nav>
-          <ul>
-            <li><a href="#">Previous Sessions</a></li>
-            <li><a href="#">Personal History</a></li>
-            <li><a href="#">Community</a></li>
-            <li><a href="about.html">About Health Glove</a></li>
-          </ul>
-        </nav>
-
-
-
       <article>
-      <table style="width:100%" id="Dashboard">
-       <tr>
-         <th></th>
-         <th>Heart Rate (bpm)</th>
-         <th>Body Temperature (F)</th>
-       </tr>
-       <tr>
-         <th>Last Minute</th>
-         <td>88</td>
-         <td>100</td>
-       </tr>
-       <tr>
-         <th>Average for 5 Minutes</th>
-         <td>72</td>
-         <td>96</td>
-       </tr>
-       <tr>
-         <th>Average for 10 minutes</th>
-         <td>70</td>
-         <td>95</td>
-      </table>
+        <div id="chartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
       </article>
--->
+      </div>
     </div>
-
-    <div class="footer">
-      <a href="index.html">Switch to desktop version</a>
-
-    </div>
-
     <script>
     function startButton() {
       var start = document.getElementById("startWorkout");
@@ -306,6 +315,7 @@ nav ul{
   </body>
 
   <script src="scripts/jquery.js"></script>
+  <script src="scripts/canvasjs.min.js"></script>
   <script src="scripts/main.js"></script>
 
 </html>

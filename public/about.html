@@ -6,6 +6,86 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="shortcut icon" href="images/favicon.ico">
 <link rel="stylesheet" href="styles/main.css">
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  color: #777;
+  line-height: 1.8;
+  margin:0;
+  padding:0;
+}
+nav {
+  float: left;
+  width: 20%;
+  height: 700px; /* only for demonstration, should be removed */
+  background: #f44336;
+}
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+/* Clear floats after the columns */
+section:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+nav a:link, nav a:visited {
+  background-color: #f44336;
+  color: white;
+  padding: 15px 25px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  width:100%;
+}
+
+nav a:hover, nav a:active {
+  background-color: red;
+}
+nav ul{
+  list-style-type: none;
+}
+</style>
 </head>
   <body>
 
@@ -15,20 +95,30 @@
       }
     </script>
 
-        <!-- Navbar -->
+        <!-- Navbar
     <div class="topnav">
       <a href="main.html">Home</a>
     </div>
-
+-->
     <img src='images/running-couple.jpg' style="width:100%;margin-bottom:-5px">
 
     <div class="content">
+      <section>
+        <nav>
+          <ul>
+            <li><a href="mobileHome.html">Home</a></li>
+            <li><a href="#">Previous Sessions</a></li>
+            <li><a href="#">Personal History</a></li>
+            <li><a href="#">Community</a></li>
+          </ul>
+        </nav>
+<!-- Main Content -->
+          <div class="col-9">
+            <h2>About Health Glove</h2>
 
-      <h2>About Health Glove</h2>
-
-      <p>Hello Hello! We are Team 13 for IEEE QP Winter 2019!</p>
-      <p>Health Glove is a wearable that measures one's heart rate and body temperature.
-
+            <p>Hello Hello! We are Team 13 for IEEE QP Winter 2019!</p>
+            <p>Health Glove is a wearable that measures one's heart rate and body temperature.
+          </div>
 
     </div>
 
