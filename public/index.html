@@ -23,7 +23,11 @@
 
       <div id="startWorkout" class="startWorkout">
           <div class="col-3">
-            <input type="image" src="stylesheets/images/start.png" onclick="setInterval(record_time, 1000); startButton(); plot_graph()" style="width:60%"/>
+            <input id="startButton"
+                   type="image"
+                   src="stylesheets/images/start.png"
+                   onclick="startButton(); plotHeartRate(); plotIR(); startWorkout();"
+                   style="width:60%"/>
           </div>
 
           <div class="col-6">
@@ -69,34 +73,20 @@
           <p> Press to stop the workout </P>
         </div>
       <article>
-        <div id="chartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
+        <div id="heartRateChartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
+        <div id="IRChartContainer" class="col-9" style="height: 300px; width: 100%;"></div>
       </article>
       </div>
     </div>
     <script>
-    function startButton() {
-      var start = document.getElementById("startWorkout");
-      var workout = document.getElementById("workout");
-      /**if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "none";
-      }*/
-      if ($(start).is(':visible')) {
-        $(start).slideUp('slow');
-        $(workout).slideDown('slow');
-      } else {
-        $(start).slideDown('fast');
-        $(workout).slideUp('fast');
-      }
 
-    }
     </script>
 
 
 
   </body>
 
+  <script src="/socket.io/socket.io.js"></script>
   <script src="javascripts/jquery.js"></script>
   <script src="javascripts/canvasjs.min.js"></script>
   <script src="javascripts/main.js"></script>
