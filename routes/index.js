@@ -7,10 +7,13 @@ module.exports = function(io) {
 
     //Hard-coded IP address, will be replaced soon
     var pi_ip = 'http://192.168.43.252:3000';
+    // var pi_ip;
 
     const START = '/startheartrate';
     const STOP = '/stopheartrate';
     const POLL = '/heartrate';
+
+    const IR = '/rawir';
 
     const MULTICAST_PORT = 3333;
     const MULTICAST_IP = '224.0.0.116';
@@ -25,63 +28,91 @@ module.exports = function(io) {
         // var address = client.address();
         client.setBroadcast(true);
         client.setMulticastTTL(MULTICAST_PORT);
-        client.addMembership(MULTICAST_IP, 'localhost:3000');
+        client.addMembership(MULTICAST_IP);
     });
 
     //Get the IP of the raspberry pi via multicast
     client.on('message', (message, remote) => {
-        //TODO: if message matches something
-        pi_ip = remote.address + ':3000';
-        console.log(pi_ip);
+        if (JSON.parse(message.toString())["name"] === "HealthGlove") {
+            pi_ip = "http://" + remote.address + ':3000';
+            console.log(pi_ip);
+        }
     });
     // */
 
     io.on('connection', function (socket) {
-        console.log("Test");
-        socket.emit('updateHeartRate');
+        console.log("Socket.io connected");
+        socket.on('startHeartRate', startHeartRate);
+        socket.on('pollHeartRate', () => {
+            pollHeartRate(socket);
+        });
+
+        socket.on('pollIR', () => {
+            pollIR(socket);
+        })
     });
 
     /* Send GET requests to pi */
 
     //Send a get request to start measuring heart rate
     function startHeartRate() {
+        console.log(pi_ip + START);
         http.get(pi_ip + START, (res) => {
-            console.log("Received response!");
+            console.log("Started heart rate");
         });
     }
 
     //Send a get request to get the value of the heart rate
-    function pollHeartRate() {
+    function pollHeartRate(socket) {
         http.get(pi_ip + POLL, (res) => {
-            console.log("Received response!");
-            console.log(JSON.stringify(res.headers));
+            console.log("Received heart rate response");
+            // console.log(JSON.stringify(res.headers));
 
-            var bodyChunks = [];
+            //Parse JSON
+            let bodyChunks = [];
             res.on('data', function(chunk) {
-                // You can process streamed parts here...
                 bodyChunks.push(chunk);
             }).on('end', function() {
-                var body = Buffer.concat(bodyChunks);
-                console.log('BODY: ' + body);
+                let body = Buffer.concat(bodyChunks);
+                // console.log('BODY: ' + body);
 
-                console.log(body.toJSON().heartRate);
+                let jsonObject = JSON.parse(body.toString());
+
+                //Emit a socket to update the client
+                socket.emit('updateHeartRate', jsonObject);
             });
+        });
+    }
 
+    function pollIR(socket) {
+        http.get(pi_ip + IR, (res) => {
+            console.log("Received IR response");
+            // console.log(JSON.stringify(res.headers));
+
+            //Parse JSON
+            let bodyChunks = [];
+            res.on('data', function(chunk) {
+                bodyChunks.push(chunk);
+            }).on('end', function() {
+                let body = Buffer.concat(bodyChunks);
+                // console.log('BODY: ' + body);
+
+                let jsonObject = JSON.parse(body.toString());
+
+                //Emit a socket to update the client
+                socket.emit('updateIR', jsonObject);
+            });
         });
     }
 
     //Send a get request to stop measuring heart rate
     function stopHeartRate() {
         http.get(pi_ip + STOP, (res) => {
-            console.log("Receieved response!");
-            // console.log(res);
-            //TODO handle response data
+            console.log("Stopped heart rate data");
         });
     }
 
-    startHeartRate();
-
-    setInterval(pollHeartRate, 1000);
+    // setInterval(pollHeartRate, 1000);
 
     return router;
 };
